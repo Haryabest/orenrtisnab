@@ -1,0 +1,18 @@
+{
+  "name": "ОРЕНРТИСНАБ",
+  "short_name": "ОРЕНРТИСНАБ",
+  "description": "Промышленные уплотнения и РТИ. Сальники, манжеты, O-Ring.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#102d50",
+  "lang": "ru",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

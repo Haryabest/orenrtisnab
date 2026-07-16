@@ -1,0 +1,38 @@
+export type RequestFormData = {
+  name: string
+  phone: string
+  email: string
+  honeypot: string
+}
+
+export function validatePhone(phone: string): boolean {
+  const digits = phone.replace(/\D/g, '')
+  return digits.length >= 10 && digits.length <= 11
+}
+
+export async function submitRequestForm(data: RequestFormData): Promise<void> {
+  if (data.honeypot) {
+    return
+  }
+
+  const endpoint = import.meta.env.VITE_FORM_ENDPOINT
+  if (!endpoint) {
+    console.warn('VITE_FORM_ENDPOINT не задан — заявка сохранена только локально')
+    return
+  }
+
+  const response = await fetch(endpoint, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      name: data.name.trim(),
+      phone: data.phone.trim(),
+      email: data.email.trim() || undefined,
+      source: 'orenrtisnab.ru',
+    }),
+  })
+
+  if (!response.ok) {
+    throw new Error('Не удалось отправить заявку')
+  }
+}
