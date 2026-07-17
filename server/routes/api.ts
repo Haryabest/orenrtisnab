@@ -2,7 +2,7 @@ import { Router } from 'express'
 import rateLimit from 'express-rate-limit'
 import multer from 'multer'
 import { randomUUID } from 'node:crypto'
-import { extname, join } from 'node:path'
+import { join } from 'node:path'
 import { writeFile, mkdir } from 'node:fs/promises'
 import { loginSchema, siteContentSchema } from '../../shared/content-schema.ts'
 import { CONTENT_SECTIONS, type ContentSection } from '../../shared/site-content.ts'
@@ -20,6 +20,7 @@ import { readContent, updateSection, writeContent } from '../services/content.ts
 import { getDashboard, getLeadsPage, getVisitsPage, recordLead, recordVisit, updateLeadStatus } from '../services/analytics.ts'
 import { notifyNewLead } from '../services/notifications.ts'
 import { getClientIp } from '../utils/request-meta.ts'
+import { optimizeUploadedImage } from '../utils/image-optimize.ts'
 
 const router = Router()
 
@@ -199,19 +200,17 @@ router.post('/upload', requireAdminApi, requireAuth, apiLimiter, upload.single('
     return
   }
 
-  const extMap: Record<string, string> = {
-    'image/jpeg': '.jpg',
-    'image/png': '.png',
-    'image/webp': '.webp',
-    'image/svg+xml': '.svg',
-  }
-  const ext = extMap[req.file.mimetype] || extname(req.file.originalname).toLowerCase()
-  const filename = `${randomUUID()}${ext}`
+  const optimized = await optimizeUploadedImage(req.file.buffer, req.file.mimetype)
+  const filename = `${randomUUID()}${optimized.ext}`
 
   await mkdir(config.uploadsDir, { recursive: true })
-  await writeFile(join(config.uploadsDir, filename), req.file.buffer)
+  await writeFile(join(config.uploadsDir, filename), optimized.buffer)
 
-  res.json({ url: `/images/${filename}` })
+  res.json({
+    url: `/images/${filename}`,
+    bytes: optimized.buffer.length,
+    mimeType: optimized.mimeType,
+  })
 })
 
 router.post('/form/submit', apiLimiter, async (req, res) => {

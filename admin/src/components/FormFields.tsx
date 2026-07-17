@@ -32,9 +32,10 @@ type ImageFieldProps = {
   value: string
   onChange: (value: string) => void
   onUpload: (file: File) => Promise<void>
+  hint?: string
 }
 
-export function ImageField({ label, value, onChange, onUpload }: ImageFieldProps) {
+export function ImageField({ label, value, onChange, onUpload, hint }: ImageFieldProps) {
   const inputRef = useRef<HTMLInputElement>(null)
 
   return (
@@ -47,7 +48,7 @@ export function ImageField({ label, value, onChange, onUpload }: ImageFieldProps
             ref={inputRef}
             type="file"
             hidden
-            accept="image/jpeg,image/png,image/webp,image/svg+xml"
+            accept="image/jpeg,image/png,image/webp"
             onChange={(e) => {
               const file = e.target.files?.[0]
               if (file) void onUpload(file)
@@ -55,9 +56,14 @@ export function ImageField({ label, value, onChange, onUpload }: ImageFieldProps
             }}
           />
         </Flex>
+        {hint && (
+          <Typography.Text type="secondary" style={{ fontSize: 12, display: 'block', marginTop: 6 }}>
+            {hint}
+          </Typography.Text>
+        )}
         {value && (
           <div style={{ marginTop: 12 }}>
-            <Image src={value} alt="" style={{ maxHeight: 120, objectFit: 'contain' }} />
+            <Image src={value} alt="" style={{ maxHeight: 160, maxWidth: '100%', objectFit: 'contain' }} />
           </div>
         )}
       </Form.Item>

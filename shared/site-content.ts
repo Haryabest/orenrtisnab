@@ -17,7 +17,7 @@ export type IconName =
   | 'chevron'
 
 export type NavItem = { label: string; href: string }
-export type ProductItem = { title: string; description: string; number: string }
+export type ProductItem = { title: string; description: string; number: string; image: string }
 export type BenefitItem = { icon: IconName; title: string; description: string }
 export type ProcessStep = { title: string; description: string }
 export type DeliveryOption = { title: string; icon: IconName }
@@ -250,13 +250,13 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
     ctaHref: '#request',
     categoryLabel: 'КАТЕГОРИЯ',
     items: [
-      { title: 'Сальники', description: '', number: '01' },
-      { title: 'Манжеты по ГОСТ', description: '', number: '02' },
-      { title: 'Уплотнительные кольца', description: '', number: '03' },
-      { title: 'X-Ring', description: '', number: '04' },
-      { title: 'V-Ring', description: '', number: '05' },
-      { title: 'Грязесъёмники', description: '', number: '06' },
-      { title: 'РТИ', description: 'Техпластины, шнуры и другое', number: '07' },
+      { title: 'Сальники', description: '', number: '01', image: '' },
+      { title: 'Манжеты по ГОСТ', description: '', number: '02', image: '' },
+      { title: 'Уплотнительные кольца', description: '', number: '03', image: '' },
+      { title: 'X-Ring', description: '', number: '04', image: '' },
+      { title: 'V-Ring', description: '', number: '05', image: '' },
+      { title: 'Грязесъёмники', description: '', number: '06', image: '' },
+      { title: 'РТИ', description: 'Техпластины, шнуры и другое', number: '07', image: '' },
     ],
   },
   process: {

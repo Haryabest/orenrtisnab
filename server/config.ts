@@ -38,7 +38,7 @@ export const config = {
   distDir: join(rootDir, 'dist'),
   adminDistDir: join(rootDir, 'admin', 'dist'),
 
-  maxUploadBytes: 5 * 1024 * 1024,
+  maxUploadBytes: 12 * 1024 * 1024,
   allowedImageTypes: ['image/jpeg', 'image/png', 'image/webp', 'image/svg+xml'] as const,
 }
 

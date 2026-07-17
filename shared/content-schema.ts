@@ -87,7 +87,14 @@ export const siteContentSchema = z.object({
     ctaHref: safeHref,
     categoryLabel: safeShort,
     items: z
-      .array(z.object({ title: safeShort, description: safeText, number: safeShort }))
+      .array(
+        z.object({
+          title: safeShort,
+          description: safeText,
+          number: safeShort,
+          image: z.preprocess((val) => (typeof val === 'string' ? val : ''), safeHref),
+        }),
+      )
       .max(20),
   }),
   process: z.object({

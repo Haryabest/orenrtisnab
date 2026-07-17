@@ -225,6 +225,23 @@ export function SectionEditor({
                 items[i] = { ...items[i], number: v }
                 set({ items })
               }} />
+              <ImageField
+                label="Фото"
+                hint="JPEG или PNG до 12 МБ. При загрузке сжимается в WebP без заметной потери качества."
+                value={item.image}
+                onChange={(v) => {
+                  const items = [...d.items]
+                  items[i] = { ...items[i], image: v }
+                  set({ items })
+                }}
+                onUpload={(f) =>
+                  upload(f, (url) => {
+                    const items = [...d.items]
+                    items[i] = { ...items[i], image: url }
+                    set({ items })
+                  })
+                }
+              />
             </FormSection>
           ))}
         </>
