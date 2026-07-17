@@ -1,35 +1,32 @@
+import { resolveCatalogImage } from '../../../shared/site-content'
 import { m } from 'framer-motion'
 import { Icon } from '../Icon/Icon'
 import { useContent } from '../../context/ContentContext'
 import { fadeUp, scaleIn, staggerContainer, viewport } from '../motion/variants'
 
-function CatalogCardVisual({ image, featured }: { image: string; featured: boolean }) {
+const CATALOG_CARD_GRADIENT =
+  'linear-gradient(105deg, rgba(255,255,255,.97) 0%, rgba(255,255,255,.92) 45%, rgba(255,255,255,.55) 100%)'
+
+function CatalogCardVisual({ image }: { image: string }) {
   if (image) {
     return (
-      <img
-        src={image}
-        alt=""
-        className={`pointer-events-none absolute object-contain object-right-bottom transition duration-500 group-hover:scale-105 ${
-          featured ? 'right-2 -bottom-2 h-[82%] max-w-[52%]' : 'right-0 bottom-0 h-[78%] max-w-[58%]'
-        }`}
-        loading="lazy"
-        decoding="async"
-      />
+      <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
+        <img
+          src={image}
+          alt=""
+          className="absolute inset-0 h-full w-full object-cover object-center transition duration-500 group-hover:scale-[1.03]"
+          loading="lazy"
+          decoding="async"
+        />
+        <div className="absolute inset-0" style={{ background: CATALOG_CARD_GRADIENT }} />
+      </div>
     )
   }
 
   return (
     <>
-      <div
-        className={`absolute ${
-          featured ? '-right-6 -bottom-14 h-52 w-52 border-[20px]' : '-right-7 -bottom-10 h-32 w-32 border-[14px]'
-        } rounded-full border-[#d6e1e9] transition duration-500 group-hover:scale-110 group-hover:border-[#79bafa]`}
-      />
-      <div
-        className={`absolute ${
-          featured ? 'right-18 bottom-8 h-16 w-16 border-[12px]' : 'right-12 bottom-7 h-9 w-9 border-[8px]'
-        } rounded-full border-[#102d50]/90`}
-      />
+      <div className="absolute -right-7 -bottom-10 h-32 w-32 rounded-full border-[14px] border-[#d6e1e9] transition duration-500 group-hover:scale-110 group-hover:border-[#79bafa]" />
+      <div className="absolute right-12 bottom-7 h-9 w-9 rounded-full border-[8px] border-[#102d50]/90" />
     </>
   )
 }
@@ -74,13 +71,16 @@ export function CatalogSection() {
           viewport={viewport}
           variants={staggerContainer}
         >
-          {catalog.items.map((item, index) => (
+          {catalog.items.map((item, index) => {
+            const image = resolveCatalogImage(item.title, item.image)
+
+            return (
             <m.a
               href={catalog.ctaHref}
               key={item.title}
-              className={`group relative overflow-hidden rounded-2xl bg-white p-5 ${
-                index === 0 ? 'sm:col-span-2 sm:min-h-[240px]' : 'min-h-[185px]'
-              }`}
+              className={`group relative overflow-hidden rounded-2xl p-5 ${
+                image ? 'bg-transparent' : 'bg-white'
+              } ${index === 0 ? 'sm:col-span-2 sm:min-h-[240px]' : 'min-h-[185px]'}`}
               variants={scaleIn}
               whileHover={{ y: -4 }}
             >
@@ -96,9 +96,10 @@ export function CatalogSection() {
                   <Icon name="arrow" size={15} />
                 </span>
               </div>
-              <CatalogCardVisual image={item.image} featured={index === 0} />
+              <CatalogCardVisual image={image} />
             </m.a>
-          ))}
+            )
+          })}
         </m.div>
       </div>
     </section>

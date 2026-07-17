@@ -38,10 +38,12 @@ export async function initDb(): Promise<void> {
     initialized = true
     dbReady = true
     console.log('PostgreSQL schema ready')
-  } catch {
+  } catch (err) {
     initialized = true
     dbReady = false
-    console.warn('PostgreSQL unavailable — using JSON file storage (development)')
+    const message = err instanceof Error ? err.message : String(err)
+    console.error('PostgreSQL unavailable — using JSON file storage:', message)
+    console.error('Check DATABASE_URL in .env (must match docker-compose POSTGRES_PASSWORD)')
   }
 }
 

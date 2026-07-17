@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
-import { DEFAULT_SITE_CONTENT, type SiteContent } from '../../shared/site-content'
+import { DEFAULT_SITE_CONTENT, applyCatalogDefaultImages, type SiteContent } from '../../shared/site-content'
 
 type ContentContextValue = {
   content: SiteContent
@@ -45,12 +45,17 @@ export function ContentProvider({ children }: { children: ReactNode }) {
       .then((res) => (res.ok ? res.json() : Promise.reject()))
       .then((data: SiteContent) => {
         if (!cancelled) {
-          setContent(data)
-          applySiteMeta(data)
+          const merged = applyCatalogDefaultImages(data)
+          setContent(merged)
+          applySiteMeta(merged)
         }
       })
       .catch(() => {
-        if (!cancelled) applySiteMeta(DEFAULT_SITE_CONTENT)
+        if (!cancelled) {
+          const merged = applyCatalogDefaultImages(DEFAULT_SITE_CONTENT)
+          setContent(merged)
+          applySiteMeta(merged)
+        }
       })
       .finally(() => {
         if (!cancelled) setLoading(false)

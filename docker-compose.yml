@@ -4,7 +4,8 @@ services:
     restart: unless-stopped
     environment:
       POSTGRES_USER: orenrtisnab
-      POSTGRES_PASSWORD: orenrtisnab
+      # Пароль задаётся при ПЕРВОМ запуске тома pgdata. Позже меняйте через ALTER USER (см. deploy/beget.md).
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-orenrtisnab}
       POSTGRES_DB: orenrtisnab
     ports:
       - '5432:5432'

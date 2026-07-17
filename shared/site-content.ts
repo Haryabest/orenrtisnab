@@ -252,13 +252,13 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
     ctaHref: '#request',
     categoryLabel: 'КАТЕГОРИЯ',
     items: [
-      { title: 'Сальники', description: '', number: '01', image: '' },
-      { title: 'Манжеты по ГОСТ', description: '', number: '02', image: '' },
-      { title: 'Уплотнительные кольца', description: '', number: '03', image: '' },
-      { title: 'X-Ring', description: '', number: '04', image: '' },
-      { title: 'V-Ring', description: '', number: '05', image: '' },
+      { title: 'Сальники', description: '', number: '01', image: '/images/catalog/salnik.webp' },
+      { title: 'Манжеты по ГОСТ', description: '', number: '02', image: '/images/catalog/manzhet.webp' },
+      { title: 'Уплотнительные кольца', description: '', number: '03', image: '/images/catalog/oring.webp' },
+      { title: 'X-Ring', description: '', number: '04', image: '/images/catalog/x-ring.webp' },
+      { title: 'V-Ring', description: '', number: '05', image: '/images/catalog/v-ring.webp' },
       { title: 'Грязесъёмники', description: '', number: '06', image: '' },
-      { title: 'РТИ', description: 'Техпластины, шнуры и другое', number: '07', image: '' },
+      { title: 'РТИ', description: 'Техпластины, шнуры и другое', number: '07', image: '/images/catalog/rti.webp' },
     ],
   },
   process: {
@@ -376,6 +376,27 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
     text: 'Оставить заявку',
     href: '#request',
   },
+}
+
+export const CATALOG_DEFAULT_IMAGES: Record<string, string> = Object.fromEntries(
+  DEFAULT_SITE_CONTENT.catalog.items.filter((item) => item.image).map((item) => [item.title, item.image]),
+)
+
+export function resolveCatalogImage(title: string, image = ''): string {
+  return image || CATALOG_DEFAULT_IMAGES[title] || ''
+}
+
+export function applyCatalogDefaultImages(content: SiteContent): SiteContent {
+  return {
+    ...content,
+    catalog: {
+      ...content.catalog,
+      items: content.catalog.items.map((item) => ({
+        ...item,
+        image: resolveCatalogImage(item.title, item.image),
+      })),
+    },
+  }
 }
 
 export const CONTENT_SECTIONS = [

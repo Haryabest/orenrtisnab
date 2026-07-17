@@ -132,5 +132,55 @@ cd /var/www/orenrtisnab
 git pull          # или залить файлы заново
 pnpm install
 pnpm build
-pm2 restart orenrtisnab
+pm2 restart orenrtisnab --update-env
+```
+
+## PostgreSQL: `db: false` при работающем Docker
+
+Контейнер `healthy`, но приложение не подключается — неверный `DATABASE_URL` в `.env`.
+
+```bash
+# Проверка БД в Docker (пароль по умолчанию: orenrtisnab)
+docker exec orenrtisnab-db-1 psql -U orenrtisnab -d orenrtisnab -c 'SELECT 1'
+
+# В .env должно быть (если пароль не меняли в docker-compose.yml):
+DATABASE_URL=postgresql://orenrtisnab:orenrtisnab@localhost:5432/orenrtisnab
+
+pm2 restart orenrtisnab --update-env
+curl -s http://127.0.0.1:3001/api/health   # ожидается {"ok":true,"db":true}
+```
+
+Предупреждение docker `The "K" variable is not set` — в `.env` есть символ `$` (например в пароле или JWT).  
+В значениях с `$` используйте `$$` или возьмите пароль без `$`.
+
+Ошибка подключения в логах: `pm2 logs orenrtisnab --lines 30`
+
+### Сменили пароль БД
+
+PostgreSQL в Docker **не подхватывает** новый `POSTGRES_PASSWORD` из `docker-compose.yml`, если том `pgdata` уже создан. Нужно синхронизировать пароль вручную:
+
+```bash
+# 1. Задайте новый пароль внутри работающей БД (подставьте свой пароль)
+docker exec -it orenrtisnab-db-1 psql -U orenrtisnab -d orenrtisnab \
+  -c "ALTER USER orenrtisnab WITH PASSWORD 'ВАШ_НОВЫЙ_ПАРОЛЬ';"
+
+# 2. Пропишите тот же пароль в .env (спецсимволы — в URL-кодировке)
+nano /var/www/orenrtisnab/.env
+# POSTGRES_PASSWORD=ВАШ_НОВЫЙ_ПАРОЛЬ
+# DATABASE_URL=postgresql://orenrtisnab:ВАШ_НОВЫЙ_ПАРОЛЬ@localhost:5432/orenrtisnab
+
+# 3. Проверка
+PGPASSWORD='ВАШ_НОВЫЙ_ПАРОЛЬ' psql -h 127.0.0.1 -U orenrtisnab -d orenrtisnab -c 'SELECT 1'
+
+pm2 restart orenrtisnab --update-env
+curl -s http://127.0.0.1:3001/api/health
+```
+
+Если не помните старый пароль и данных в БД ещё нет, можно сбросить том (удалит все данные):
+
+```bash
+docker compose down
+docker volume rm orenrtisnab_pgdata
+# задайте POSTGRES_PASSWORD в .env, затем:
+docker compose up -d
 ```
