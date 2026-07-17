@@ -21,6 +21,7 @@ app.use(
   helmet({
     contentSecurityPolicy: {
       directives: {
+        ...helmet.contentSecurityPolicy.getDefaultDirectives(),
         defaultSrc: ["'self'"],
         scriptSrc: ["'self'", "'unsafe-inline'", 'https://mc.yandex.ru'],
         styleSrc: ["'self'", "'unsafe-inline'"],
@@ -32,11 +33,13 @@ app.use(
         frameAncestors: ["'none'"],
         baseUri: ["'self'"],
         formAction: ["'self'"],
+        ...(config.enableHttps ? {} : { 'upgrade-insecure-requests': null }),
       },
     },
     crossOriginEmbedderPolicy: false,
     crossOriginOpenerPolicy: config.enableHttps ? { policy: 'same-origin' } : false,
     crossOriginResourcePolicy: config.enableHttps ? { policy: 'same-origin' } : false,
+    originAgentCluster: config.enableHttps,
     hsts: config.enableHttps
       ? { maxAge: 31536000, includeSubDomains: true, preload: true }
       : false,

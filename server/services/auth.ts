@@ -53,7 +53,7 @@ export function verifyToken(token: string): AuthTokenPayload | null {
 export function setAuthCookie(res: Response, token: string) {
   res.cookie(config.cookieName, token, {
     httpOnly: true,
-    secure: config.isProd,
+    secure: config.enableHttps,
     sameSite: 'strict',
     maxAge: 8 * 60 * 60 * 1000,
     path: '/',
@@ -63,7 +63,7 @@ export function setAuthCookie(res: Response, token: string) {
 export function clearAuthCookie(res: Response) {
   res.clearCookie(config.cookieName, {
     httpOnly: true,
-    secure: config.isProd,
+    secure: config.enableHttps,
     sameSite: 'strict',
     path: '/',
   })

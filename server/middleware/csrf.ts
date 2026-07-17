@@ -1,5 +1,5 @@
 import type { NextFunction, Request, Response } from 'express'
-import { isAdminHost } from '../config.ts'
+import { config, isAdminHost } from '../config.ts'
 
 const CSRF_HEADER = 'x-csrf-token'
 const CSRF_COOKIE = 'csrf_token'
@@ -9,7 +9,7 @@ export function issueCsrfToken(req: Request, res: Response, next: NextFunction) 
     const token = crypto.randomUUID()
     res.cookie(CSRF_COOKIE, token, {
       httpOnly: false,
-      secure: process.env.NODE_ENV === 'production',
+      secure: config.enableHttps,
       sameSite: 'strict',
       path: '/',
     })
