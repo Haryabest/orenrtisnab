@@ -74,7 +74,6 @@ app.use('/api', (_req, res) => {
 app.use('/images', express.static(join(config.distDir, 'images'), { maxAge: config.isProd ? '7d' : 0, fallthrough: true }))
 app.use('/images', express.static(config.uploadsDir, { maxAge: config.isProd ? '7d' : 0, fallthrough: true }))
 app.use(express.static(config.publicDir, { maxAge: config.isProd ? '1d' : 0, fallthrough: true }))
-app.use(express.static(config.distDir, { maxAge: config.isProd ? '1d' : 0 }))
 
 app.use((req, res, next) => {
   if (!isAllowedSiteHost(req.hostname)) {

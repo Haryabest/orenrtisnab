@@ -29,6 +29,12 @@ export function verifyCsrf(req: Request, res: Response, next: NextFunction) {
     return
   }
 
+  const publicPaths = ['/api/analytics/visit', '/api/form/submit']
+  if (publicPaths.includes(req.path)) {
+    next()
+    return
+  }
+
   const cookieToken = req.cookies?.[CSRF_COOKIE]
   const headerToken = req.get(CSRF_HEADER)
 

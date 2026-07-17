@@ -4,6 +4,7 @@ const SESSION_KEY = 'oren_visit_tracked'
 
 export function VisitTracker() {
   useEffect(() => {
+    if (window.location.hostname.startsWith('admin.')) return
     if (sessionStorage.getItem(SESSION_KEY)) return
 
     const payload = {
