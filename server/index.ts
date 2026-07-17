@@ -10,6 +10,7 @@ import { bootstrapAnalytics } from './services/analytics.ts'
 import { assertProductionConfig, config, isAdminHost, isAllowedOrigin, isAllowedSiteHost, isMainSiteHost } from './config.ts'
 import { issueCsrfToken, verifyCsrf } from './middleware/csrf.ts'
 import { sendNotFound } from './notFound.ts'
+import { isSecureRequest } from './utils/is-secure-request.ts'
 
 assertProductionConfig()
 
@@ -17,7 +18,9 @@ const app = express()
 
 app.set('trust proxy', 1)
 
-app.use(
+app.use((req, res, next) => {
+  const secure = isSecureRequest(req)
+
   helmet({
     contentSecurityPolicy: {
       useDefaults: true,
@@ -33,18 +36,16 @@ app.use(
         frameAncestors: ["'none'"],
         baseUri: ["'self'"],
         formAction: ["'self'"],
-        ...(config.enableHttps ? {} : { 'upgrade-insecure-requests': null }),
+        ...(secure ? {} : { 'upgrade-insecure-requests': null }),
       },
     },
     crossOriginEmbedderPolicy: false,
-    crossOriginOpenerPolicy: config.enableHttps ? { policy: 'same-origin' } : false,
-    crossOriginResourcePolicy: config.enableHttps ? { policy: 'same-origin' } : false,
-    originAgentCluster: config.enableHttps,
-    hsts: config.enableHttps
-      ? { maxAge: 31536000, includeSubDomains: true, preload: true }
-      : false,
-  }),
-)
+    crossOriginOpenerPolicy: secure ? { policy: 'same-origin' } : false,
+    crossOriginResourcePolicy: secure ? { policy: 'same-origin' } : false,
+    originAgentCluster: secure,
+    hsts: secure ? { maxAge: 31536000, includeSubDomains: true, preload: true } : false,
+  })(req, res, next)
+})
 
 app.use(
   cors({

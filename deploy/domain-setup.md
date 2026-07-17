@@ -68,23 +68,23 @@ sudo certbot renew --dry-run
 
 ## Шаг 4. Включить HTTPS в приложении
 
+**Только после успешного certbot** (когда `https://orenrtisnab.ru` открывается в браузере):
+
 ```bash
 nano /var/www/orenrtisnab/.env
 ```
 
-Измените / добавьте:
-
 ```env
-MAIN_DOMAIN=orenrtisnab.ru
-ADMIN_SUBDOMAIN=admin.orenrtisnab.ru
 ENABLE_HTTPS=true
 ```
-
-`SERVER_IP=31.129.103.174` можно оставить — сайт будет работать и по IP, и по домену.
 
 ```bash
 pm2 restart orenrtisnab --update-env
 ```
+
+> До certbot оставьте `ENABLE_HTTPS=false`. Иначе браузер будет пытаться грузить ресурсы по HTTPS, а порт 443 ещё не работает.
+
+`SERVER_IP=31.129.103.174` можно оставить.
 
 ---
 

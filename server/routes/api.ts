@@ -79,12 +79,12 @@ router.post('/auth/login', requireAdminApi, authLimiter, async (req, res) => {
   }
 
   const token = signToken({ sub: parsed.data.username, role: 'admin' })
-  setAuthCookie(res, token)
+  setAuthCookie(req, res, token)
   res.json({ ok: true, csrfHeader: CSRF_HEADER })
 })
 
-router.post('/auth/logout', requireAdminApi, requireAuth, (_req, res) => {
-  clearAuthCookie(res)
+router.post('/auth/logout', requireAdminApi, requireAuth, (req, res) => {
+  clearAuthCookie(req, res)
   res.json({ ok: true })
 })
 

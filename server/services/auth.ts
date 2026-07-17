@@ -1,7 +1,8 @@
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
-import type { Response } from 'express'
+import type { Request, Response } from 'express'
 import { config } from '../config.ts'
+import { isSecureRequest } from '../utils/is-secure-request.ts'
 
 const BCRYPT_ROUNDS = 12
 
@@ -50,20 +51,20 @@ export function verifyToken(token: string): AuthTokenPayload | null {
   }
 }
 
-export function setAuthCookie(res: Response, token: string) {
+export function setAuthCookie(req: Request, res: Response, token: string) {
   res.cookie(config.cookieName, token, {
     httpOnly: true,
-    secure: config.enableHttps,
+    secure: isSecureRequest(req),
     sameSite: 'strict',
     maxAge: 8 * 60 * 60 * 1000,
     path: '/',
   })
 }
 
-export function clearAuthCookie(res: Response) {
+export function clearAuthCookie(req: Request, res: Response) {
   res.clearCookie(config.cookieName, {
     httpOnly: true,
-    secure: config.enableHttps,
+    secure: isSecureRequest(req),
     sameSite: 'strict',
     path: '/',
   })
