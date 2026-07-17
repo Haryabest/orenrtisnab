@@ -114,17 +114,16 @@ nginx -t && systemctl reload nginx
 
 Откройте в браузере: **http://31.129.103.174**
 
-## 8. Когда подключите домен (reg.ru)
+## 8. Подключение домена orenrtisnab.ru
 
-1. DNS: A-записи `orenrtisnab.ru`, `www`, `admin` → IP сервера
-2. В nginx `server_name` добавьте домены
-3. SSL:
-   ```bash
-   apt install -y certbot python3-certbot-nginx
-   certbot --nginx -d orenrtisnab.ru -d www.orenrtisnab.ru -d admin.orenrtisnab.ru
-   ```
-4. Для админки — блок `admin.orenrtisnab.ru` уже в `deploy/nginx.conf`
-5. `SERVER_IP` в `.env` можно оставить или убрать
+**Полная инструкция:** [`deploy/domain-setup.md`](domain-setup.md)
+
+Кратко:
+
+1. **reg.ru** — A-записи `@`, `www`, `admin` → IP сервера
+2. **nginx** — `sudo cp deploy/nginx.conf /etc/nginx/sites-available/orenrtisnab && sudo nginx -t && sudo systemctl reload nginx`
+3. **SSL** — `sudo certbot --nginx -d orenrtisnab.ru -d www.orenrtisnab.ru -d admin.orenrtisnab.ru`
+4. **.env** — `ENABLE_HTTPS=true`, затем `pm2 restart orenrtisnab --update-env`
 
 ## Обновление после правок
 
