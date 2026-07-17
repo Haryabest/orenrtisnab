@@ -1,8 +1,7 @@
 import { Alert, Button, Card, Col, Flex, Row, Table, Tag, Typography } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
-import { useCallback, useEffect, useState } from 'react'
-import type { DashboardData, LeadRecord, VisitRecord } from '../../../shared/analytics-types'
-import { api } from '../api'
+import type { LeadRecord, VisitRecord } from '../../../shared/analytics-types'
+import { useLeadAlerts } from '../context/LeadAlertsContext'
 
 function StatCard({ label, value, accent }: { label: string; value: number; accent?: string }) {
   return (
@@ -68,45 +67,7 @@ function RankList({ title, items, empty }: { title: string; items: { label: stri
 }
 
 export function Dashboard() {
-  const [data, setData] = useState<DashboardData | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
-
-  const load = useCallback(async () => {
-    setLoading(true)
-    setError('')
-    try {
-      const dashboard = await api.getDashboard()
-      setData(dashboard)
-    } catch (e) {
-      setError(e instanceof Error ? e.message : 'Ошибка загрузки')
-    } finally {
-      setLoading(false)
-    }
-  }, [])
-
-  useEffect(() => {
-    load()
-    const interval = setInterval(load, 60_000)
-    return () => clearInterval(interval)
-  }, [load])
-
-  async function markLeadRead(lead: LeadRecord) {
-    if (lead.status === 'read') return
-    try {
-      await api.updateLeadStatus(lead.id, 'read')
-      setData((current) => {
-        if (!current) return current
-        return {
-          ...current,
-          stats: { ...current.stats, leadsNew: Math.max(0, current.stats.leadsNew - 1) },
-          recentLeads: current.recentLeads.map((l) => (l.id === lead.id ? { ...l, status: 'read' } : l)),
-        }
-      })
-    } catch {
-      setError('Не удалось обновить заявку')
-    }
-  }
+  const { data, loading, error, refresh, markLeadRead } = useLeadAlerts()
 
   if (loading && !data) {
     return <Typography.Text type="secondary">Загрузка дашборда…</Typography.Text>
@@ -118,7 +79,7 @@ export function Dashboard() {
         type="error"
         message={error}
         action={
-          <Button size="small" onClick={load}>
+          <Button size="small" onClick={() => void refresh()}>
             Повторить
           </Button>
         }
@@ -168,7 +129,14 @@ export function Dashboard() {
       key: 'status',
       render: (_, lead) =>
         lead.status === 'new' ? (
-          <Button type="primary" size="small" ghost onClick={() => markLeadRead(lead)}>
+          <Button
+            type="primary"
+            size="small"
+            ghost
+            onClick={() => {
+              void markLeadRead(lead).catch(() => undefined)
+            }}
+          >
             Новая
           </Button>
         ) : (
@@ -190,8 +158,8 @@ export function Dashboard() {
   return (
     <Flex vertical gap={24}>
       <Flex justify="space-between" align="center" wrap="wrap" gap={12}>
-        <Typography.Text type="secondary">Обновляется автоматически каждую минуту</Typography.Text>
-        <Button onClick={load} loading={loading}>
+        <Typography.Text type="secondary">Заявки обновляются каждые 5 секунд</Typography.Text>
+        <Button onClick={() => void refresh()} loading={loading}>
           Обновить
         </Button>
       </Flex>

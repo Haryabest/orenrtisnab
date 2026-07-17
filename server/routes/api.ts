@@ -18,6 +18,7 @@ import {
 } from '../services/auth.ts'
 import { readContent, updateSection, writeContent } from '../services/content.ts'
 import { getDashboard, getLeadsPage, getVisitsPage, recordLead, recordVisit, updateLeadStatus } from '../services/analytics.ts'
+import { notifyNewLead } from '../services/notifications.ts'
 import { getClientIp } from '../utils/request-meta.ts'
 
 const router = Router()
@@ -239,25 +240,19 @@ router.post('/form/submit', apiLimiter, async (req, res) => {
 
   let forwarded = false
   const content = await readContent()
-  const endpoint = content.site.formEndpoint
+  const endpoint = content.site.formEndpoint || undefined
 
-  if (endpoint) {
-    try {
-      const response = await fetch(endpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: cleanName,
-          phone: cleanPhone,
-          email: cleanEmail || undefined,
-          source: cleanSource,
-        }),
-      })
-      forwarded = response.ok
-    } catch {
-      forwarded = false
-    }
-  }
+  const notification = await notifyNewLead(
+    {
+      name: cleanName,
+      phone: cleanPhone,
+      email: cleanEmail,
+      source: cleanSource,
+      referrer: meta.referrer || undefined,
+    },
+    endpoint,
+  )
+  forwarded = notification.telegram || notification.max || notification.webhook
 
   try {
     await recordLead({

@@ -18,6 +18,12 @@ export const config = {
   serverIp: process.env.SERVER_IP || '',
   enableHttps: process.env.ENABLE_HTTPS === 'true',
 
+  telegramBotToken: process.env.TELEGRAM_BOT_TOKEN || '',
+  telegramChatId: process.env.TELEGRAM_CHAT_ID || '',
+  maxBotToken: process.env.MAX_BOT_TOKEN || '',
+  maxUserId: process.env.MAX_USER_ID || '',
+  maxChatId: process.env.MAX_CHAT_ID || '',
+
   cookieName: 'admin_token',
   jwtExpiresIn: '8h' as const,
 

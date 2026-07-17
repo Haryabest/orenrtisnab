@@ -188,7 +188,7 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
     ogImage: '/images/og.svg',
     ogImageAlt: 'ОРЕНРТИСНАБ — промышленные уплотнения и РТИ',
     themeColor: '#102d50',
-    yandexMetrikaId: '',
+    yandexMetrikaId: '110818589',
     formEndpoint: '',
     openingHours: { opens: '09:00', closes: '18:00' },
     areaServed: ['RU', 'KZ', 'BY', 'AM', 'KG'],

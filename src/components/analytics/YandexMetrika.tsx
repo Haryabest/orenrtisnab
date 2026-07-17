@@ -2,10 +2,17 @@ import { useEffect } from 'react'
 import { useContent } from '../../context/ContentContext'
 import { resolveMetrikaId, setMetrikaCounterId } from '../../utils/analytics'
 
+declare global {
+  interface Window {
+    dataLayer?: unknown[]
+  }
+}
+
 function loadMetrika(id: string) {
   if (document.querySelector('script[data-metrika]')) return
 
   setMetrikaCounterId(id)
+  window.dataLayer = window.dataLayer || []
 
   const script = document.createElement('script')
   script.dataset.metrika = 'true'
@@ -15,13 +22,16 @@ function loadMetrika(id: string) {
       m[i].l=1*new Date();
       for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
       k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
-    })(window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+    })(window, document, "script", "https://mc.yandex.ru/metrika/tag.js?id=${id}", "ym");
     ym(${id}, "init", {
-      clickmap:true,
-      trackLinks:true,
-      accurateTrackBounce:true,
-      webvisor:true,
-      trackHash:true
+      ssr: true,
+      webvisor: true,
+      clickmap: true,
+      ecommerce: "dataLayer",
+      referrer: document.referrer,
+      url: location.href,
+      accurateTrackBounce: true,
+      trackLinks: true
     });
   `
   document.head.appendChild(script)

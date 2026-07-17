@@ -1,9 +1,10 @@
 import { Flex, Spin, Typography, message } from 'antd'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState, type ReactNode } from 'react'
 import type { ContentSection, SiteContent } from '../../shared/site-content'
 import { api } from './api'
 import { Dashboard } from './components/Dashboard'
 import { SectionEditor } from './components/SectionEditor'
+import { LeadAlertsProvider } from './context/LeadAlertsContext'
 import { AdminShell } from './layout/AdminShell'
 import { LoginPage } from './pages/LoginPage'
 import { getSectionLabel } from './sectionLabels'
@@ -96,13 +97,54 @@ export default function App() {
   const title = view === 'dashboard' ? 'Дашборд' : getSectionLabel(view)
 
   return (
+    <LeadAlertsProvider
+      enabled={authed}
+      onLeadClick={() => openView('dashboard')}
+    >
+      <AdminApp
+        contextHolder={contextHolder}
+        view={view}
+        title={title}
+        draft={draft}
+        saving={saving}
+        onNavigate={openView}
+        onLogout={handleLogout}
+        onSave={view !== 'dashboard' ? handleSave : undefined}
+        onDraftChange={setDraft}
+      />
+    </LeadAlertsProvider>
+  )
+}
+
+function AdminApp({
+  contextHolder,
+  view,
+  title,
+  draft,
+  saving,
+  onNavigate,
+  onLogout,
+  onSave,
+  onDraftChange,
+}: {
+  contextHolder: ReactNode
+  view: 'dashboard' | ContentSection
+  title: string
+  draft: SiteContent[ContentSection] | null
+  saving: boolean
+  onNavigate: (view: 'dashboard' | ContentSection) => void
+  onLogout: () => void | Promise<void>
+  onSave?: () => void | Promise<void>
+  onDraftChange: (data: SiteContent[ContentSection]) => void
+}) {
+  return (
     <>
       {contextHolder}
       <AdminShell
         view={view}
-        onNavigate={openView}
-        onLogout={handleLogout}
-        onSave={view !== 'dashboard' ? handleSave : undefined}
+        onNavigate={onNavigate}
+        onLogout={onLogout}
+        onSave={onSave}
         saving={saving}
         title={title}
       >
@@ -114,7 +156,7 @@ export default function App() {
               key={view}
               section={view}
               data={draft}
-              onChange={setDraft}
+              onChange={onDraftChange}
               onUpload={(file) => api.uploadImage(file)}
             />
           </Flex>

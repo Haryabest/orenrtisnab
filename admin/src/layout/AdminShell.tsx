@@ -15,12 +15,13 @@ import {
   PhoneOutlined,
   LogoutOutlined,
 } from '@ant-design/icons'
-import { Button, Layout, Menu, Typography } from 'antd'
+import { Badge, Button, Layout, Menu, Typography } from 'antd'
 import type { MenuProps } from 'antd'
 import type { ReactNode } from 'react'
 import type { ContentSection } from '../../../shared/site-content'
 import { CONTENT_SECTIONS } from '../../../shared/site-content'
 import { getSectionLabel, SECTION_ORDER } from '../sectionLabels'
+import { useLeadAlerts } from '../context/LeadAlertsContext'
 
 const { Header, Sider, Content } = Layout
 
@@ -59,11 +60,17 @@ export function AdminShell({
   title,
   children,
 }: AdminShellProps) {
+  const { newLeadsCount } = useLeadAlerts()
+
   const menuItems: MenuProps['items'] = [
     {
       key: 'dashboard',
       icon: <BarChartOutlined />,
-      label: 'Дашборд',
+      label: (
+        <Badge count={newLeadsCount} size="small" offset={[8, 0]} color="#0d9488">
+          <span>Дашборд</span>
+        </Badge>
+      ),
     },
     ...SECTION_ORDER.filter((key) => CONTENT_SECTIONS.includes(key as ContentSection)).map((key) => ({
       key,
