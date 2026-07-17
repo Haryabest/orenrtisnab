@@ -20,8 +20,8 @@ app.set('trust proxy', 1)
 app.use(
   helmet({
     contentSecurityPolicy: {
+      useDefaults: true,
       directives: {
-        ...helmet.contentSecurityPolicy.getDefaultDirectives(),
         defaultSrc: ["'self'"],
         scriptSrc: ["'self'", "'unsafe-inline'", 'https://mc.yandex.ru'],
         styleSrc: ["'self'", "'unsafe-inline'"],
