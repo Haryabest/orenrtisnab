@@ -15,6 +15,7 @@ export const config = {
 
   mainDomain: process.env.MAIN_DOMAIN || 'orenrtisnab.ru',
   adminSubdomain: process.env.ADMIN_SUBDOMAIN || 'admin.orenrtisnab.ru',
+  serverIp: process.env.SERVER_IP || '',
 
   cookieName: 'admin_token',
   jwtExpiresIn: '8h' as const,
@@ -59,6 +60,9 @@ export function isMainSiteHost(host: string): boolean {
   if (!config.isProd && (normalized === 'localhost' || normalized === '127.0.0.1')) {
     return true
   }
+  if (config.serverIp && normalized === config.serverIp) {
+    return true
+  }
   return normalized === config.mainDomain || normalized === `www.${config.mainDomain}`
 }
 
@@ -80,6 +84,7 @@ export function isAllowedOrigin(origin: string | undefined): boolean {
       host === `www.${config.mainDomain}` ||
       host === config.adminSubdomain ||
       host.startsWith('admin.') ||
+      (config.serverIp && host === config.serverIp) ||
       (!config.isProd && (host === 'localhost' || host === '127.0.0.1'))
     )
   } catch {
