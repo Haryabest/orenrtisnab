@@ -16,6 +16,7 @@ export const config = {
   mainDomain: process.env.MAIN_DOMAIN || 'orenrtisnab.ru',
   adminSubdomain: process.env.ADMIN_SUBDOMAIN || 'admin.orenrtisnab.ru',
   serverIp: process.env.SERVER_IP || '',
+  enableHttps: process.env.ENABLE_HTTPS === 'true',
 
   cookieName: 'admin_token',
   jwtExpiresIn: '8h' as const,

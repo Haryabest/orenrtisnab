@@ -35,7 +35,11 @@ app.use(
       },
     },
     crossOriginEmbedderPolicy: false,
-    hsts: config.isProd ? { maxAge: 31536000, includeSubDomains: true, preload: true } : false,
+    crossOriginOpenerPolicy: config.enableHttps ? { policy: 'same-origin' } : false,
+    crossOriginResourcePolicy: config.enableHttps ? { policy: 'same-origin' } : false,
+    hsts: config.enableHttps
+      ? { maxAge: 31536000, includeSubDomains: true, preload: true }
+      : false,
   }),
 )
 

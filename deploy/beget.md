@@ -104,21 +104,7 @@ curl -I http://127.0.0.1:3001
 nano /etc/nginx/sites-available/orenrtisnab
 ```
 
-```nginx
-server {
-    listen 80;
-    server_name 31.129.103.174;   # потом добавите orenrtisnab.ru www.orenrtisnab.ru
-
-    location / {
-        proxy_pass http://127.0.0.1:3001;
-        proxy_http_version 1.1;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-    }
-}
-```
+Скопируйте содержимое из `deploy/nginx.conf` (для старта по IP — раскомментируйте блок «Этап 1»).
 
 ```bash
 ln -sf /etc/nginx/sites-available/orenrtisnab /etc/nginx/sites-enabled/
@@ -137,7 +123,7 @@ nginx -t && systemctl reload nginx
    apt install -y certbot python3-certbot-nginx
    certbot --nginx -d orenrtisnab.ru -d www.orenrtisnab.ru -d admin.orenrtisnab.ru
    ```
-4. Для админки — отдельный `server { server_name admin.orenrtisnab.ru; ... }` (см. `deploy/nginx.example.conf`)
+4. Для админки — блок `admin.orenrtisnab.ru` уже в `deploy/nginx.conf`
 5. `SERVER_IP` в `.env` можно оставить или убрать
 
 ## Обновление после правок
