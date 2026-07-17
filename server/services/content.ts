@@ -1,6 +1,6 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { dirname } from 'node:path'
-import { DEFAULT_SITE_CONTENT, applyCatalogDefaultImages, type ContentSection, type SiteContent } from '../../shared/site-content.ts'
+import { DEFAULT_SITE_CONTENT, applyContentDefaults, type ContentSection, type SiteContent } from '../../shared/site-content.ts'
 import { siteContentSchema } from '../../shared/content-schema.ts'
 import { config } from '../config.ts'
 import { isDbReady, pool } from '../db/pool.ts'
@@ -54,7 +54,7 @@ export async function readContent(): Promise<SiteContent> {
   if (cache) return cache
 
   const raw = isDbReady() ? await ensureContentRow() : await readContentFromJson()
-  const content = applyCatalogDefaultImages(siteContentSchema.parse(raw))
+  const content = applyContentDefaults(siteContentSchema.parse(raw))
   cache = content
   return content
 }

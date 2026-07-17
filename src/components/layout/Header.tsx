@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { AnimatePresence, m } from 'framer-motion'
 import { Icon } from '../Icon/Icon'
 import { useContent } from '../../context/ContentContext'
+import { DEFAULT_SITE_CONTENT } from '../../../shared/site-content'
 import { trackPhoneClick } from '../../utils/analytics'
 import { fadeUp, headerSlide, staggerContainer } from '../motion/variants'
 
@@ -9,6 +10,7 @@ export function Header() {
   const [menuOpen, setMenuOpen] = useState(false)
   const { content } = useContent()
   const { header, contacts } = content
+  const logoSrc = header.logoImage || DEFAULT_SITE_CONTENT.header.logoImage
 
   return (
     <m.header
@@ -19,19 +21,19 @@ export function Header() {
     >
       <div className="mx-auto flex h-[76px] max-w-[1220px] items-center justify-between px-5 lg:px-8">
         <a href={header.logoHref} className="flex items-center gap-3">
-          {header.logoImage ? (
-            <img
-              src={header.logoImage}
-              alt={header.name}
-              className="h-10 w-10 shrink-0 object-contain"
-              width={40}
-              height={40}
-            />
-          ) : (
-            <span className="grid h-10 w-10 place-items-center bg-[#102d50] text-[15px] font-extrabold text-white">
-              {header.monogram}
-            </span>
-          )}
+          <img
+            src={logoSrc}
+            alt={header.name}
+            className="h-10 w-10 shrink-0 object-contain"
+            width={40}
+            height={40}
+            onError={(event) => {
+              const fallback = DEFAULT_SITE_CONTENT.header.logoImage
+              if (!event.currentTarget.src.includes(fallback)) {
+                event.currentTarget.src = fallback
+              }
+            }}
+          />
           <span className="text-[15px] font-extrabold tracking-[-.035em]">
             {header.name}
             <span className="block text-[9px] font-medium tracking-[.15em] text-slate-500">{header.tagline}</span>

@@ -399,6 +399,28 @@ export function applyCatalogDefaultImages(content: SiteContent): SiteContent {
   }
 }
 
+export function applyAssetDefaults(content: SiteContent): SiteContent {
+  return {
+    ...content,
+    site: {
+      ...content.site,
+      ogImage: content.site.ogImage || DEFAULT_SITE_CONTENT.site.ogImage,
+    },
+    header: {
+      ...content.header,
+      logoImage: content.header.logoImage || DEFAULT_SITE_CONTENT.header.logoImage,
+    },
+    hero: {
+      ...content.hero,
+      backgroundImage: content.hero.backgroundImage || DEFAULT_SITE_CONTENT.hero.backgroundImage,
+    },
+  }
+}
+
+export function applyContentDefaults(content: SiteContent): SiteContent {
+  return applyCatalogDefaultImages(applyAssetDefaults(content))
+}
+
 export const CONTENT_SECTIONS = [
   'site',
   'header',
