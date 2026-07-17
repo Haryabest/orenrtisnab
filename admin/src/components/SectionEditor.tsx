@@ -80,7 +80,13 @@ export function SectionEditor({
       const set = (patch: Partial<typeof d>) => onChange({ ...d, ...patch })
       return (
         <FormSection title="Шапка">
-          <Field label="Монограмма" value={d.monogram} onChange={(v) => set({ monogram: v })} />
+          <ImageField
+            label="Логотип"
+            value={d.logoImage}
+            onChange={(v) => set({ logoImage: v })}
+            onUpload={(f) => upload(f, (url) => set({ logoImage: url }))}
+          />
+          <Field label="Монограмма (если нет логотипа)" value={d.monogram} onChange={(v) => set({ monogram: v })} />
           <Field label="Название" value={d.name} onChange={(v) => set({ name: v })} />
           <Field label="Подзаголовок" value={d.tagline} onChange={(v) => set({ tagline: v })} />
           <Field label="Ссылка логотипа" value={d.logoHref} onChange={(v) => set({ logoHref: v })} />

@@ -50,6 +50,7 @@ export type SiteContent = {
   }
   header: {
     monogram: string
+    logoImage: string
     name: string
     tagline: string
     logoHref: string
@@ -196,6 +197,7 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
   },
   header: {
     monogram: 'ОС',
+    logoImage: '/images/logo.png',
     name: 'ОРЕНРТИСНАБ',
     tagline: 'Уплотнительные соединения, РТИ',
     logoHref: '#top',

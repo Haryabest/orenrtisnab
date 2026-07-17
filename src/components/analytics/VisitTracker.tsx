@@ -18,7 +18,10 @@ export function VisitTracker() {
       body: JSON.stringify(payload),
       keepalive: true,
     })
-      .then(() => sessionStorage.setItem(SESSION_KEY, '1'))
+      .then(async (response) => {
+        if (!response.ok) throw new Error(`visit track failed: ${response.status}`)
+        sessionStorage.setItem(SESSION_KEY, '1')
+      })
       .catch(() => {})
   }, [])
 

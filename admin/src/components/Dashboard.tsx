@@ -90,7 +90,7 @@ export function Dashboard() {
 
   if (!data) return null
 
-  const { stats, recentVisits, recentLeads } = data
+  const { stats, recentVisits, recentLeads, meta } = data
 
   const leadColumns: ColumnsType<LeadRecord> = [
     { title: 'Дата', dataIndex: 'at', render: (v) => formatDate(v), width: 140 },
@@ -157,6 +157,14 @@ export function Dashboard() {
 
   return (
     <Flex vertical gap={24}>
+      {meta?.storage === 'json' && (
+        <Alert
+          type="warning"
+          showIcon
+          message="PostgreSQL недоступна"
+          description="Статистика сохраняется во временные JSON-файлы. Проверьте docker compose и DATABASE_URL в .env."
+        />
+      )}
       <Flex justify="space-between" align="center" wrap="wrap" gap={12}>
         <Typography.Text type="secondary">Заявки обновляются каждые 5 секунд</Typography.Text>
         <Button onClick={() => void refresh()} loading={loading}>

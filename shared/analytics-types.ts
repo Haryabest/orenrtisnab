@@ -50,4 +50,8 @@ export type DashboardData = {
   stats: DashboardStats
   recentVisits: VisitRecord[]
   recentLeads: LeadRecord[]
+  meta?: {
+    dbReady: boolean
+    storage: 'postgres' | 'json'
+  }
 }

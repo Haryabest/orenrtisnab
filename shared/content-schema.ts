@@ -48,6 +48,7 @@ export const siteContentSchema = z.object({
   }),
   header: z.object({
     monogram: safeShort,
+    logoImage: z.preprocess((val) => (typeof val === 'string' ? val : ''), safeHref),
     name: safeShort,
     tagline: safeShort,
     logoHref: safeHref,

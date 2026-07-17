@@ -67,9 +67,10 @@ export function AdminShell({
       key: 'dashboard',
       icon: <BarChartOutlined />,
       label: (
-        <Badge count={newLeadsCount} size="small" offset={[8, 0]} color="#0d9488">
-          <span>Дашборд</span>
-        </Badge>
+        <span className="admin-dashboard-label">
+          Дашборд
+          {newLeadsCount > 0 ? <Badge count={newLeadsCount} size="small" color="#0d9488" /> : null}
+        </span>
       ),
     },
     ...SECTION_ORDER.filter((key) => CONTENT_SECTIONS.includes(key as ContentSection)).map((key) => ({

@@ -18,6 +18,7 @@ import {
 } from '../services/auth.ts'
 import { readContent, updateSection, writeContent } from '../services/content.ts'
 import { getDashboard, getLeadsPage, getVisitsPage, recordLead, recordVisit, updateLeadStatus } from '../services/analytics.ts'
+import { isDbReady } from '../db/pool.ts'
 import { notifyNewLead } from '../services/notifications.ts'
 import { getClientIp } from '../utils/request-meta.ts'
 import { optimizeUploadedImage } from '../utils/image-optimize.ts'
@@ -52,7 +53,7 @@ const upload = multer({
 })
 
 router.get('/health', (_req, res) => {
-  res.json({ ok: true })
+  res.json({ ok: true, db: isDbReady() })
 })
 
 router.get('/content', apiLimiter, async (_req, res) => {
@@ -149,7 +150,8 @@ router.post('/analytics/visit', trackLimiter, async (req, res) => {
       screenWidth: typeof screenWidth === 'number' ? screenWidth : undefined,
     })
     res.json({ ok: true, id: visit.id })
-  } catch {
+  } catch (err) {
+    console.error('Failed to record visit:', err)
     res.status(500).json({ error: 'Failed to record visit' })
   }
 })
