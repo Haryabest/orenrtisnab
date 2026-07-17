@@ -1,12 +1,14 @@
 import { useState } from 'react'
 import { AnimatePresence, m } from 'framer-motion'
 import { Icon } from '../Icon/Icon'
-import { NAV_ITEMS, CONTACTS } from '../../data/content'
+import { useContent } from '../../context/ContentContext'
 import { trackPhoneClick } from '../../utils/analytics'
 import { fadeUp, headerSlide, staggerContainer } from '../motion/variants'
 
 export function Header() {
   const [menuOpen, setMenuOpen] = useState(false)
+  const { content } = useContent()
+  const { header, contacts } = content
 
   return (
     <m.header
@@ -16,28 +18,25 @@ export function Header() {
       variants={headerSlide}
     >
       <div className="mx-auto flex h-[76px] max-w-[1220px] items-center justify-between px-5 lg:px-8">
-        <a href="#top" className="flex items-center gap-3">
+        <a href={header.logoHref} className="flex items-center gap-3">
           <span className="grid h-10 w-10 place-items-center bg-[#102d50] text-[15px] font-extrabold text-white">
-            ОС
+            {header.monogram}
           </span>
           <span className="text-[15px] font-extrabold tracking-[-.035em]">
-            ОРЕНРТИСНАБ
-            <span className="block text-[9px] font-medium tracking-[.15em] text-slate-500">
-              Уплотнительные соединения, РТИ
-            </span>
+            {header.name}
+            <span className="block text-[9px] font-medium tracking-[.15em] text-slate-500">{header.tagline}</span>
           </span>
         </a>
 
         <nav className="hidden items-center gap-7 text-[13px] font-semibold text-slate-600 lg:flex">
-          {NAV_ITEMS.map((item, index) => (
+          {header.nav.map((item, index) => (
             <m.a
               key={item.href}
               href={item.href}
               className="transition hover:text-[#0875e1]"
-              initial={{ opacity: 0, y: -8 }}
-              animate={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
               transition={{ delay: 0.1 + index * 0.05, duration: 0.4 }}
-              whileHover={{ y: -1 }}
             >
               {item.label}
             </m.a>
@@ -46,18 +45,18 @@ export function Header() {
 
         <div className="hidden items-center gap-4 sm:flex">
           <a
-            href={CONTACTS.phones[0].href}
+            href={contacts.phones[0]?.href ?? '#'}
             onClick={trackPhoneClick}
             className="text-right text-[13px] font-extrabold leading-tight"
           >
-            {CONTACTS.phones[0].display}
-            <span className="block text-[10px] font-medium text-slate-500">{CONTACTS.schedule}</span>
+            {contacts.phones[0]?.display}
+            <span className="block text-[10px] font-medium text-slate-500">{contacts.schedule}</span>
           </a>
           <a
-            href="#request"
+            href={header.ctaHref}
             className="rounded-lg bg-[#0875e1] px-4 py-3 text-[12px] font-extrabold text-white shadow-[0_8px_20px_rgba(8,117,225,.2)] transition hover:bg-[#0768c9]"
           >
-            Оставить заявку
+            {header.ctaText}
           </a>
         </div>
 
@@ -65,7 +64,7 @@ export function Header() {
           type="button"
           onClick={() => setMenuOpen(!menuOpen)}
           className="grid h-10 w-10 place-items-center text-[#102d50] sm:hidden"
-          aria-label="Меню"
+          aria-label={header.menuAriaLabel}
           aria-expanded={menuOpen}
         >
           <Icon name="menu" />
@@ -82,7 +81,7 @@ export function Header() {
             transition={{ duration: 0.25 }}
           >
             <m.div variants={staggerContainer} initial="hidden" animate="visible">
-              {NAV_ITEMS.map((item) => (
+              {header.nav.map((item) => (
                 <m.a
                   key={item.href}
                   href={item.href}

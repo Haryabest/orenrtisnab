@@ -1,7 +1,11 @@
 import { m } from 'framer-motion'
+import { useContent } from '../../context/ContentContext'
 import { scaleIn } from '../motion/variants'
 
 export function HeroVisual() {
+  const { content } = useContent()
+  const { heroVisual } = content
+
   return (
     <m.div
       className="relative min-h-[390px] overflow-hidden rounded-[28px] bg-[#102d50] shadow-[0_24px_60px_rgba(16,45,80,.22)] md:min-h-[500px]"
@@ -44,10 +48,8 @@ export function HeroVisual() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.5, duration: 0.5 }}
       >
-        <p className="font-mono text-[10px] tracking-[.14em] text-[#83c6ff]">НАДЁЖНОСТЬ В КАЖДОЙ ДЕТАЛИ</p>
-        <p className="mt-2 max-w-[340px] text-[17px] font-bold leading-snug text-white">
-          Поставка уплотнительных соединений для техники, станков и промышленного оборудования.
-        </p>
+        <p className="font-mono text-[10px] tracking-[.14em] text-[#83c6ff]">{heroVisual.eyebrow}</p>
+        <p className="mt-2 max-w-[340px] text-[17px] font-bold leading-snug text-white">{heroVisual.text}</p>
       </m.div>
     </m.div>
   )

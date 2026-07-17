@@ -6,6 +6,7 @@ import { FloatingCta } from './components/layout/FloatingCta'
 import { HeroSection } from './components/sections/HeroSection'
 import { StructuredData } from './components/seo/StructuredData'
 import { YandexMetrika } from './components/analytics/YandexMetrika'
+import { VisitTracker } from './components/analytics/VisitTracker'
 
 const BenefitsSection = lazy(() =>
   import('./components/sections/BenefitsSection').then((m) => ({ default: m.BenefitsSection })),
@@ -39,6 +40,7 @@ export default function App() {
       <div className="overflow-x-hidden bg-white text-[#142033]">
         <StructuredData />
         <YandexMetrika />
+        <VisitTracker />
         <Header />
 
         <main id="top">

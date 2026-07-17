@@ -1,11 +1,13 @@
 import { useState } from 'react'
 import { m } from 'framer-motion'
-import { FAQ_ITEMS } from '../../data/seo'
+import { useContent } from '../../context/ContentContext'
 import { fadeUp, staggerContainer, viewport } from '../motion/variants'
 import { FaqAccordionItem } from './FaqAccordionItem'
 
 export function FaqSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(null)
+  const { content } = useContent()
+  const { faq } = content
 
   function toggle(index: number) {
     setOpenIndex((current) => (current === index ? null : index))
@@ -14,21 +16,16 @@ export function FaqSection() {
   return (
     <section id="faq" className="bg-[#f5f7f9]" aria-labelledby="faq-heading">
       <div className="mx-auto max-w-[1220px] px-5 py-20 lg:px-8">
-        <m.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={viewport}
-          variants={staggerContainer}
-        >
+        <m.div initial="hidden" whileInView="visible" viewport={viewport} variants={staggerContainer}>
           <m.p className="font-mono text-[10px] tracking-[.16em] text-[#0875e1]" variants={fadeUp}>
-            ЧАСТЫЕ ВОПРОСЫ
+            {faq.eyebrow}
           </m.p>
           <m.h2
             id="faq-heading"
             className="mt-3 text-[31px] font-extrabold tracking-[-.055em] text-[#102d50] md:text-[40px]"
             variants={fadeUp}
           >
-            Ответы на популярные вопросы
+            {faq.heading}
           </m.h2>
         </m.div>
 
@@ -39,7 +36,7 @@ export function FaqSection() {
           viewport={viewport}
           variants={staggerContainer}
         >
-          {FAQ_ITEMS.map((item, index) => (
+          {faq.items.map((item, index) => (
             <m.div key={item.question} variants={fadeUp}>
               <FaqAccordionItem
                 question={item.question}

@@ -1,9 +1,12 @@
 import { m } from 'framer-motion'
 import { Icon } from '../Icon/Icon'
-import { DELIVERY_MAP_POINTS, DELIVERY_OPTIONS } from '../../data/content'
+import { useContent } from '../../context/ContentContext'
 import { fadeLeft, fadeRight, fadeUp, scaleIn, staggerContainer, viewport } from '../motion/variants'
 
 export function DeliverySection() {
+  const { content } = useContent()
+  const { delivery } = content
+
   return (
     <section id="delivery" className="relative overflow-hidden bg-[#102d50] text-white">
       <div className="absolute inset-0 opacity-20 [background-image:linear-gradient(rgba(255,255,255,.17)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.17)_1px,transparent_1px)] [background-size:50px_50px]" />
@@ -16,15 +19,13 @@ export function DeliverySection() {
           viewport={viewport}
           variants={fadeLeft}
         >
-          <p className="font-mono text-[10px] tracking-[.16em] text-[#83c6ff]">ЛОГИСТИКА БЕЗ ЗАДЕРЖЕК</p>
+          <p className="font-mono text-[10px] tracking-[.16em] text-[#83c6ff]">{delivery.eyebrow}</p>
           <h2 className="mt-3 text-[31px] font-extrabold leading-tight tracking-[-.055em] md:text-[40px]">
-            Доставим туда,
+            {delivery.headingLine1}
             <br />
-            где работает ваше оборудование
+            {delivery.headingLine2}
           </h2>
-          <p className="mt-5 max-w-[440px] text-[14px] leading-relaxed text-blue-100/75">
-            Самовывоз, курьер, транспортные компании — доставляем по всей России и регионам.
-          </p>
+          <p className="mt-5 max-w-[440px] text-[14px] leading-relaxed text-blue-100/75">{delivery.description}</p>
 
           <m.div
             className="mt-9 grid grid-cols-2 gap-3"
@@ -33,15 +34,15 @@ export function DeliverySection() {
             whileInView="visible"
             viewport={viewport}
           >
-            {DELIVERY_OPTIONS.map(([title, iconName]) => (
+            {delivery.options.map((option) => (
               <m.div
-                key={title}
+                key={option.title}
                 className="flex items-center gap-3 rounded-xl border border-white/15 bg-white/7 p-4"
                 variants={fadeUp}
                 whileHover={{ backgroundColor: 'rgba(255,255,255,0.12)' }}
               >
-                <Icon name={iconName} size={19} />
-                <span className="text-[12px] font-bold">{title}</span>
+                <Icon name={option.icon} size={19} />
+                <span className="text-[12px] font-bold">{option.title}</span>
               </m.div>
             ))}
           </m.div>
@@ -60,9 +61,9 @@ export function DeliverySection() {
             animate={{ scale: [1, 1.3, 1] }}
             transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
           />
-          <div className="absolute left-[21%] top-[27%] font-mono text-[10px] text-[#83c6ff]">ОРЕНБУРГ</div>
+          <div className="absolute left-[21%] top-[27%] font-mono text-[10px] text-[#83c6ff]">{delivery.hubLabel}</div>
 
-          {DELIVERY_MAP_POINTS.map(([x, y], index) => (
+          {delivery.mapPoints.map((point, index) => (
             <m.div
               key={`point-${index}`}
               initial={{ opacity: 0, scale: 0 }}
@@ -72,15 +73,15 @@ export function DeliverySection() {
             >
               <div
                 className="absolute h-2.5 w-2.5 rounded-full bg-white/80"
-                style={{ left: `${x}%`, top: `${y}%` }}
+                style={{ left: `${point.x}%`, top: `${point.y}%` }}
               />
               <div
                 className="absolute h-px origin-left bg-gradient-to-r from-[#49a9ff] to-transparent"
                 style={{
                   left: '20%',
                   top: '26%',
-                  width: `${Math.hypot(x - 20, y - 26)}%`,
-                  transform: `rotate(${Math.atan2(y - 26, x - 20) * (180 / Math.PI)}deg)`,
+                  width: `${Math.hypot(point.x - 20, point.y - 26)}%`,
+                  transform: `rotate(${Math.atan2(point.y - 26, point.x - 20) * (180 / Math.PI)}deg)`,
                 }}
               />
             </m.div>
@@ -93,8 +94,8 @@ export function DeliverySection() {
             whileInView="visible"
             viewport={viewport}
           >
-            <p className="font-mono text-[10px] tracking-[.12em] text-[#83c6ff]">ГЕОГРАФИЯ ПОСТАВОК</p>
-            <p className="mt-1 text-[15px] font-bold">Россия и страны ЕАЭС</p>
+            <p className="font-mono text-[10px] tracking-[.12em] text-[#83c6ff]">{delivery.mapEyebrow}</p>
+            <p className="mt-1 text-[15px] font-bold">{delivery.mapText}</p>
           </m.div>
         </m.div>
       </div>

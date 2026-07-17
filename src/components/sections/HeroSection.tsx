@@ -1,13 +1,16 @@
 import { m } from 'framer-motion'
-import { Icon } from '../Icon/Icon'
+import { useContent } from '../../context/ContentContext'
 import { HeroVisual } from './HeroVisual'
 import { fadeUp, fadeRight, heroStagger, staggerContainer } from '../motion/variants'
 
 export function HeroSection() {
+  const { content } = useContent()
+  const { hero } = content
+
   return (
     <section className="relative isolate overflow-hidden" aria-labelledby="hero-heading">
       <img
-        src="/images/photo.png"
+        src={hero.backgroundImage}
         alt=""
         aria-hidden="true"
         className="absolute inset-0 h-full w-full object-cover object-[center_40%]"
@@ -30,7 +33,7 @@ export function HeroSection() {
             variants={fadeUp}
           >
             <span className="h-px w-8 bg-[#0875e1]" />
-            ПОСТАВКИ ПО ВСЕЙ РОССИИ
+            {hero.eyebrow}
           </m.div>
 
           <m.h1
@@ -38,27 +41,26 @@ export function HeroSection() {
             className="max-w-[590px] text-[42px] font-extrabold leading-[.98] tracking-[-.065em] text-[#102d50] md:text-[62px]"
             variants={fadeUp}
           >
-            ОРЕНРТИСНАБ
+            {hero.heading}
           </m.h1>
 
           <m.p
             className="mt-5 max-w-[580px] text-[18px] font-semibold leading-relaxed tracking-[-.025em] text-slate-700 md:text-[22px]"
             variants={fadeUp}
           >
-            Уплотнительные решения для бесперебойной работы вашего оборудования.
+            {hero.subtitle}
           </m.p>
 
           <m.p className="mt-4 max-w-[520px] text-[14px] leading-relaxed text-slate-500" variants={fadeUp}>
-            Более 500 ходовых размеров в наличии. Отгрузка в день заказа. Доставка по России, ДНР и ЛНР.
+            {hero.description}
           </m.p>
 
           <m.div className="mt-8 flex flex-col gap-3 sm:flex-row" variants={fadeUp}>
             <m.a
-              href="#request"
+              href={hero.ctaHref}
               className="group inline-flex min-h-[54px] items-center justify-center gap-3 rounded-lg bg-[#0875e1] px-7 text-[14px] font-extrabold text-white shadow-[0_12px_25px_rgba(8,117,225,.25)] transition hover:bg-[#0768c9]"
             >
-              Оставить заявку
-              <Icon name="arrow" size={18} />
+              {hero.ctaText}
             </m.a>
           </m.div>
 
@@ -66,21 +68,17 @@ export function HeroSection() {
             className="mt-10 grid max-w-[620px] grid-cols-3 gap-3 border-t border-slate-300/70 pt-6"
             variants={staggerContainer}
           >
-            {[
-              ['500+', 'позиций', 'в наличии'],
-              ['Быстрая', 'отгрузка', 'со склада'],
-              ['Работа', 'с физлицами', 'и юрлицами'],
-            ].map(([value, line1, line2], index) => (
+            {hero.stats.map((stat, index) => (
               <m.div
-                key={value}
+                key={stat.value}
                 className={index === 1 ? 'border-x border-slate-300/70 px-4' : index === 2 ? 'pl-1' : ''}
                 variants={fadeUp}
               >
-                <p className="text-[17px] font-extrabold tracking-[-.04em] text-[#102d50]">{value}</p>
+                <p className="text-[17px] font-extrabold tracking-[-.04em] text-[#102d50]">{stat.value}</p>
                 <p className="mt-1 text-[10px] font-bold leading-snug text-slate-500">
-                  {line1}
+                  {stat.line1}
                   <br />
-                  {line2}
+                  {stat.line2}
                 </p>
               </m.div>
             ))}

@@ -1,11 +1,15 @@
 import { useState, type FormEvent } from 'react'
 import { AnimatePresence, m } from 'framer-motion'
+import { InputMask } from '@react-input/mask'
 import { Icon } from '../Icon/Icon'
+import { useContent } from '../../context/ContentContext'
 import { trackFormSubmit } from '../../utils/analytics'
 import { submitRequestForm, validatePhone } from '../../utils/formSubmit'
 import { fadeUp, scaleIn, staggerContainer, viewport } from '../motion/variants'
 
 export function RequestFormSection() {
+  const { content } = useContent()
+  const form = content.requestForm
   const [submitted, setSubmitted] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -14,15 +18,15 @@ export function RequestFormSection() {
     event.preventDefault()
     setError('')
 
-    const form = event.currentTarget
-    const formData = new FormData(form)
+    const formEl = event.currentTarget
+    const formData = new FormData(formEl)
     const name = String(formData.get('name') ?? '')
     const phone = String(formData.get('phone') ?? '')
     const email = String(formData.get('email') ?? '')
     const honeypot = String(formData.get('website') ?? '')
 
     if (!validatePhone(phone)) {
-      setError('Укажите корректный номер телефона')
+      setError(form.errorPhone)
       return
     }
 
@@ -32,9 +36,9 @@ export function RequestFormSection() {
       await submitRequestForm({ name, phone, email, honeypot })
       trackFormSubmit()
       setSubmitted(true)
-      form.reset()
+      formEl.reset()
     } catch {
-      setError('Не удалось отправить заявку. Попробуйте позвонить или написать в мессенджер.')
+      setError(form.errorSubmit)
     } finally {
       setLoading(false)
     }
@@ -54,22 +58,22 @@ export function RequestFormSection() {
         <div className="relative grid gap-10 md:grid-cols-[.82fr_1.18fr]">
           <m.div variants={staggerContainer} initial="hidden" whileInView="visible" viewport={viewport}>
             <m.p className="font-mono text-[10px] tracking-[.16em] text-blue-100" variants={fadeUp}>
-              ОТВЕТИМ В РАБОЧЕЕ ВРЕМЯ
+              {form.eyebrow}
             </m.p>
             <m.h2
               className="mt-4 text-[30px] font-extrabold leading-tight tracking-[-.055em] md:text-[38px]"
               variants={fadeUp}
             >
-              Оставьте заявку — менеджер свяжется с вами
+              {form.heading}
             </m.h2>
             <m.p className="mt-5 text-[13px] leading-relaxed text-blue-100" variants={fadeUp}>
-              Подберём позицию по размеру, артикулу или фото детали. Уточним цену и срок отгрузки.
+              {form.description}
             </m.p>
             <m.div className="mt-7 flex items-center gap-3 text-[12px] font-semibold text-blue-100" variants={fadeUp}>
               <span className="grid h-9 w-9 place-items-center rounded-full bg-white/15">
                 <Icon name="headset" size={18} />
               </span>
-              Без навязчивых звонков
+              {form.trustBadge}
             </m.div>
           </m.div>
 
@@ -100,46 +104,41 @@ export function RequestFormSection() {
                   >
                     <Icon name="check" size={28} />
                   </m.span>
-                  <h3 className="mt-5 text-xl font-extrabold text-[#102d50]">Заявка отправлена</h3>
-                  <p className="mt-2 max-w-[250px] text-sm leading-relaxed text-slate-500">
-                    Менеджер свяжется с вами в ближайшее рабочее время.
-                  </p>
+                  <h3 className="mt-5 text-xl font-extrabold text-[#102d50]">{form.successTitle}</h3>
+                  <p className="mt-2 max-w-[250px] text-sm leading-relaxed text-slate-500">{form.successMessage}</p>
                 </m.div>
               ) : (
-                <m.div
-                  key="form"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                >
+                <m.div key="form" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
                   <label className="block text-[11px] font-bold text-slate-600">
-                    Имя
+                    {form.fields.name.label}
                     <input
                       name="name"
                       required
-                      placeholder="Как к вам обращаться"
+                      placeholder={form.fields.name.placeholder}
                       className="mt-1.5 h-11 w-full rounded-lg border border-slate-200 px-3 text-[13px] outline-none transition placeholder:text-slate-400 focus:border-[#0875e1] focus:ring-2 focus:ring-blue-100"
                     />
                   </label>
 
                   <label className="mt-3 block text-[11px] font-bold text-slate-600">
-                    Телефон
-                    <input
+                    {form.fields.phone.label}
+                    <InputMask
+                      mask={form.fields.phone.mask}
+                      replacement={{ _: /\d/ }}
                       name="phone"
                       required
                       type="tel"
-                      placeholder="+7 (___) ___-__-__"
+                      placeholder={form.fields.phone.placeholder}
                       className="mt-1.5 h-11 w-full rounded-lg border border-slate-200 px-3 text-[13px] outline-none transition placeholder:text-slate-400 focus:border-[#0875e1] focus:ring-2 focus:ring-blue-100"
                     />
                   </label>
 
                   <label className="mt-3 block text-[11px] font-bold text-slate-600">
-                    Email
+                    {form.fields.email.label}
                     <input
                       required
                       name="email"
                       type="email"
-                      placeholder="mail@company.ru"
+                      placeholder={form.fields.email.placeholder}
                       className="mt-1.5 h-11 w-full rounded-lg border border-slate-200 px-3 text-[13px] outline-none transition placeholder:text-slate-400 focus:border-[#0875e1] focus:ring-2 focus:ring-blue-100"
                     />
                   </label>
@@ -155,9 +154,9 @@ export function RequestFormSection() {
 
                   <label className="mt-4 flex items-start gap-2 text-[10px] leading-snug text-slate-500">
                     <input required type="checkbox" className="mt-0.5 accent-[#0875e1]" />
-                    Я согласен на обработку персональных данных и с{' '}
-                    <a href="/privacy.html" className="text-[#0875e1] underline">
-                      политикой конфиденциальности
+                    {form.consentText}{' '}
+                    <a href={form.consentLinkHref} className="text-[#0875e1] underline">
+                      {form.consentLinkText}
                     </a>
                   </label>
 
@@ -176,7 +175,7 @@ export function RequestFormSection() {
                     disabled={loading}
                     className="mt-5 h-12 w-full rounded-lg bg-[#0875e1] text-[13px] font-extrabold text-white transition hover:bg-[#0768c9] disabled:cursor-not-allowed disabled:opacity-70"
                   >
-                    {loading ? 'Отправка…' : 'Получить консультацию'}
+                    {loading ? form.submitLoadingText : form.submitText}
                   </m.button>
                 </m.div>
               )}

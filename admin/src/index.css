@@ -1,0 +1,88 @@
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url('https://static.figma.com/font/Manrope_wght__1') format('woff2');
+}
+
+@font-face {
+  font-family: 'Roboto Mono';
+  font-style: normal;
+  font-weight: 400 500;
+  font-display: swap;
+  src: url('https://static.figma.com/font/RobotoMono_wght__1') format('woff2');
+}
+
+body {
+  margin: 0;
+  background: #f1f5f9;
+  font-family: 'Manrope', Arial, sans-serif;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+.admin-sider.ant-layout-sider {
+  min-height: 100vh;
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  align-self: flex-start;
+  background: #102d50 !important;
+  overflow: hidden;
+}
+
+.admin-sider .ant-layout-sider-children {
+  height: 100%;
+}
+
+.admin-sider-inner {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  min-height: 100%;
+}
+
+.admin-sider-menu {
+  flex: 1;
+  overflow-y: auto;
+  border-inline-end: none !important;
+  padding: 4px 0;
+}
+
+.admin-sider .ant-menu-dark .ant-menu-item {
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.admin-sider .ant-menu-dark .ant-menu-item .anticon {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.admin-sider .ant-menu-dark .ant-menu-item-selected {
+  color: #fff !important;
+}
+
+.admin-sider .ant-menu-dark .ant-menu-item-selected .anticon {
+  color: #fff !important;
+}
+
+.admin-sider .ant-menu-dark .ant-menu-item:hover:not(.ant-menu-item-selected) {
+  color: #fff !important;
+}
+
+.admin-brand {
+  padding: 20px 20px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.admin-logout {
+  margin-top: auto;
+  padding: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.admin-row-new td {
+  background: #eff6ff !important;
+}
