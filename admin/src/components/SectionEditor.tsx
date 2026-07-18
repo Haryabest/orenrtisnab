@@ -160,7 +160,7 @@ export function SectionEditor({
           <FormSection title="Hero — карточка">
             <ImageField
               label="Фото"
-              hint="Если не загрузить своё — используется фоновое фото Hero. JPEG или PNG до 12 МБ."
+              hint="JPEG или PNG до 12 МБ. При загрузке сжимается в WebP. По умолчанию — hero-visual.webp."
               value={d.image}
               onChange={(v) => set({ image: v })}
             />

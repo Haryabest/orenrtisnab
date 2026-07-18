@@ -51,7 +51,13 @@ export function HeroVisual() {
         </svg>
       )}
 
-      <div className="absolute inset-0 bg-[linear-gradient(145deg,rgba(7,31,57,.1),rgba(7,31,57,.78))]" />
+      <div
+        className={
+          hasImage
+            ? 'absolute inset-0 bg-[linear-gradient(to_top,rgba(7,31,57,.5)_0%,rgba(7,31,57,.12)_42%,transparent_72%)]'
+            : 'absolute inset-0 bg-[linear-gradient(145deg,rgba(7,31,57,.1),rgba(7,31,57,.78))]'
+        }
+      />
 
       <m.div
         className="absolute bottom-9 left-7 right-7 rounded-2xl border border-white/20 bg-[#0d2949]/75 p-5 backdrop-blur-md supports-[backdrop-filter]:bg-[#0d2949]/75"

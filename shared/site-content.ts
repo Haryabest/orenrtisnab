@@ -229,7 +229,7 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
     ],
   },
   heroVisual: {
-    image: '',
+    image: '/images/hero-visual.webp',
     eyebrow: 'НАДЁЖНОСТЬ В КАЖДОЙ ДЕТАЛИ',
     text: 'Поставка уплотнительных соединений для техники, станков и промышленного оборудования.',
   },
@@ -418,10 +418,7 @@ export function applyAssetDefaults(content: SiteContent): SiteContent {
     },
     heroVisual: {
       ...content.heroVisual,
-      image:
-        content.heroVisual.image ||
-        content.hero.backgroundImage ||
-        DEFAULT_SITE_CONTENT.hero.backgroundImage,
+      image: content.heroVisual.image || DEFAULT_SITE_CONTENT.heroVisual.image,
     },
   }
 }

@@ -2,7 +2,6 @@ import { MotionProvider } from './components/motion/MotionProvider'
 import { lazy, Suspense } from 'react'
 import { Header } from './components/layout/Header'
 import { Footer } from './components/layout/Footer'
-import { FloatingCta } from './components/layout/FloatingCta'
 import { HeroSection } from './components/sections/HeroSection'
 import { StructuredData } from './components/seo/StructuredData'
 import { YandexMetrika } from './components/analytics/YandexMetrika'
@@ -57,7 +56,6 @@ export default function App() {
         </main>
 
         <Footer />
-        <FloatingCta />
       </div>
     </MotionProvider>
   )
