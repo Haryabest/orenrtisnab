@@ -70,6 +70,7 @@ export type SiteContent = {
     stats: HeroStat[]
   }
   heroVisual: {
+    image: string
     eyebrow: string
     text: string
   }
@@ -228,6 +229,7 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
     ],
   },
   heroVisual: {
+    image: '',
     eyebrow: 'НАДЁЖНОСТЬ В КАЖДОЙ ДЕТАЛИ',
     text: 'Поставка уплотнительных соединений для техники, станков и промышленного оборудования.',
   },
@@ -413,6 +415,13 @@ export function applyAssetDefaults(content: SiteContent): SiteContent {
     hero: {
       ...content.hero,
       backgroundImage: content.hero.backgroundImage || DEFAULT_SITE_CONTENT.hero.backgroundImage,
+    },
+    heroVisual: {
+      ...content.heroVisual,
+      image:
+        content.heroVisual.image ||
+        content.hero.backgroundImage ||
+        DEFAULT_SITE_CONTENT.hero.backgroundImage,
     },
   }
 }

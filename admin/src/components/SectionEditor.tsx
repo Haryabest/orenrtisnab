@@ -156,10 +156,20 @@ export function SectionEditor({
       const d = data as SiteContent['heroVisual']
       const set = (patch: Partial<typeof d>) => onChange({ ...d, ...patch })
       return (
-        <FormSection title="Hero — карточка">
-          <Field label="Надзаголовок" value={d.eyebrow} onChange={(v) => set({ eyebrow: v })} />
-          <Field label="Текст" value={d.text} onChange={(v) => set({ text: v })} multiline />
-        </FormSection>
+        <>
+          <FormSection title="Hero — карточка">
+            <ImageField
+              label="Фото"
+              hint="Если не загрузить своё — используется фоновое фото Hero. JPEG или PNG до 12 МБ."
+              value={d.image}
+              onChange={(v) => set({ image: v })}
+            />
+          </FormSection>
+          <FormSection title="Текст на карточке">
+            <Field label="Надзаголовок" value={d.eyebrow} onChange={(v) => set({ eyebrow: v })} />
+            <Field label="Текст" value={d.text} onChange={(v) => set({ text: v })} multiline />
+          </FormSection>
+        </>
       )
     }
 

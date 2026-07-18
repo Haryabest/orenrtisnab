@@ -68,6 +68,7 @@ export const siteContentSchema = z.object({
     stats: z.array(z.object({ value: safeShort, line1: safeShort, line2: safeShort })).max(6),
   }),
   heroVisual: z.object({
+    image: z.preprocess((val) => (typeof val === 'string' ? val : ''), safeHref),
     eyebrow: safeShort,
     text: safeText,
   }),
